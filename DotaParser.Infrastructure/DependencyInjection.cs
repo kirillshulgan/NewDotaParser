@@ -36,6 +36,10 @@ public static class DependencyInjection
         services.AddScoped<IApplicationDbContext>(provider => 
             provider.GetRequiredService<ApplicationDbContext>());
 
+        services.AddScoped<IDotaConstantsProvider, DotaConstantsProvider>();
+
+        services.AddHostedService<RedisConstantsSeederService>();
+
         // Настройка MassTransit и RabbitMQ
         services.AddMassTransit(x =>
         {
