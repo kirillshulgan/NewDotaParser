@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/.solution/">
+    <File Path="docker-compose.yml" />
+  </Folder>
+  <Project Path="DotaParser.Api/DotaParser.Api.csproj" />
+  <Project Path="DotaParser.Application/DotaParser.Application.csproj" />
+  <Project Path="DotaParser.Domain/DotaParser.Domain.csproj" />
+  <Project Path="DotaParser.Infrastructure/DotaParser.Infrastructure.csproj" />
+</Solution>
