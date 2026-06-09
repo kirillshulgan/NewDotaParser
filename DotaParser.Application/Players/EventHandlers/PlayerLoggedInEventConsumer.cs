@@ -30,7 +30,7 @@ public class PlayerLoggedInEventConsumer : IConsumer<PlayerLoggedInEvent>
 
         try
         {
-            var fetchedMatches = await _openDotaService.GetPlayerMatchesAsync(message.AccountId, 50, context.CancellationToken);
+            var fetchedMatches = await _openDotaService.GetPlayerMatchesAsync(message.AccountId, 100, context.CancellationToken);
 
             if (!fetchedMatches.Any())
                 return;
@@ -38,8 +38,8 @@ public class PlayerLoggedInEventConsumer : IConsumer<PlayerLoggedInEvent>
             // Достаем из базы ID тех матчей, которые мы УЖЕ сохраняли ранее,
             // чтобы не добавлять дубликаты.
             var existingMatchIds = await _context.Matches
-                .Where(m => m.PlayerAccountId == message.AccountId)
-                .Select(m => m.DotaMatchId)
+                .Where(m => (m.RadiantTeam != null && m.RadiantTeam.Players.Any(x => x.AccountId == message.AccountId)) || ( m.DireTeam != null && m.DireTeam.Players.Any(x => x.AccountId == message.AccountId)))
+                .Select(m => m.MatchId)
                 .ToListAsync(context.CancellationToken);
 
             var newMatchesToSave = new List<Match>();
@@ -52,20 +52,11 @@ public class PlayerLoggedInEventConsumer : IConsumer<PlayerLoggedInEvent>
                 newMatchesToSave.Add(new Match
                 {
                     Id = Guid.NewGuid(),
-                    DotaMatchId = dto.MatchId,
-                    PlayerAccountId = message.AccountId,
-                    PlayerSlot = dto.PlayerSlot,
+                    MatchId = dto.MatchId,
                     RadiantWin = dto.RadiantWin,
                     Duration = dto.DurationSeconds,
                     GameMode = dto.GameMode,
                     LobbyType = dto.LobbyType,
-                    HeroId = dto.HeroId,
-                    Kills = dto.Kills,
-                    Deaths = dto.Deaths,
-                    Assists = dto.Assists,
-                    AverageRank = dto.AverageRank,
-                    LeaverStatus = dto.LeaverStatus,
-                    PartySize = dto.PartySize,
                     StartTime = DateTimeOffset.FromUnixTimeSeconds(dto.StartTime).UtcDateTime
                 });
             }

@@ -18,7 +18,7 @@ public class OpenDotaService : IOpenDotaService
     public async Task<PlayerProfileDto?> GetPlayerProfileAsync(long accountId, CancellationToken cancellationToken)
     {
         // Делаем GET-запрос: https://api.opendota.com/api/players/{accountId}
-        var endpoint = OpenDotaEndpoints.PlayerProfile(accountId);
+        var endpoint = OpenDotaEndpoints.Players.GetPlayerProfile(accountId);
         var response = await _httpClient.GetAsync(endpoint, cancellationToken);
 
         // Если профиль не найден (или скрыт), OpenDota может вернуть 404
@@ -52,7 +52,7 @@ public class OpenDotaService : IOpenDotaService
     public async Task<List<MatchDto>> GetPlayerMatchesAsync(long accountId, int limit, CancellationToken cancellationToken)
     {
         // Запрос к: https://api.opendota.com/api/players/{account_id}/matches?limit=20
-        var endpoint = OpenDotaEndpoints.PlayerMatches(accountId, limit);
+        var endpoint = OpenDotaEndpoints.Players.GetPlayerMatches(accountId, limit);
         var response = await _httpClient.GetAsync(endpoint, cancellationToken);
 
         response.EnsureSuccessStatusCode(); // Наш ResilienceHandler обработает 429 ошибку (Rate limit) сам

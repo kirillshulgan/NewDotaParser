@@ -25,7 +25,7 @@ public class LoginPlayerCommandHandler : IRequestHandler<LoginPlayerCommand, Gui
 
         // Ищем игрока в БД
         var player = await _context.Players
-            .FirstOrDefaultAsync(p => p.SteamAccountId == accountId, cancellationToken);
+            .FirstOrDefaultAsync(p => p.AccountId == accountId, cancellationToken);
 
         if (player == null)
         {
@@ -33,9 +33,8 @@ public class LoginPlayerCommandHandler : IRequestHandler<LoginPlayerCommand, Gui
             player = new Player
             {
                 Id = Guid.NewGuid(),
-                SteamAccountId = accountId,
+                AccountId = accountId,
                 PersonaName = request.PersonaName,
-                AvatarUrl = request.AvatarUrl,
                 ProfileUrl = $"https://steamcommunity.com/profiles/{request.SteamId64}"
             };
             _context.Players.Add(player);
@@ -44,7 +43,6 @@ public class LoginPlayerCommandHandler : IRequestHandler<LoginPlayerCommand, Gui
         {
             // Если уже есть - обновляем ник и аватар (они могли поменяться в Steam)
             player.PersonaName = request.PersonaName;
-            player.AvatarUrl = request.AvatarUrl;
         }
 
         await _context.SaveChangesAsync(cancellationToken);

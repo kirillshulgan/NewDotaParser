@@ -1,6 +1,9 @@
 <Solution>
   <Folder Name="/.solution/">
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
     <File Path="docker-compose.yml" />
+    <File Path="README.md" />
   </Folder>
   <Project Path="DotaParser.Api/DotaParser.Api.csproj" />
   <Project Path="DotaParser.Application/DotaParser.Application.csproj" />
